@@ -23,7 +23,6 @@ txttela3 = fontesys.render(
     "Precione F12 para excluir todas as marcaçoes", 1, (255, 255, 255))
 txttela4 = fontesys.render("Precione ESC para sair", 1, (255, 255, 255))
 
-
 def ResetScreen():
     screen.fill((255, 255, 255))
     screen.blit(sky, (0, 0))
@@ -32,14 +31,13 @@ def ResetScreen():
     screen.blit(txttela3, (10, 70))
     screen.blit(txttela4, (10, 100))
 
-
 ResetScreen()
 pygame.mixer.init()
 pygame.mixer.music.load(os.path.join("Space_Machine_Power.mp3"))
 pygame.mixer.music.play(loops=-1)
 
 stars = {}
-sequence = ()
+sequence = []
 
 def SavePoints():
     with open("bd.position", "w") as file:
@@ -48,21 +46,27 @@ def SavePoints():
             name = value["name"]
             file.write(f'{key}: {x}: {y}:{name}\n')
 
-
 def LoadPoints():
     stars.clear()
+    sequence.clear()
     try:
         with open("bd.position", "r") as file:
             for line in file:
                 key, x, y, name = line.strip().split(":")
                 stars[key] = {'pos': (int(x), int(y)), "name": name}
+                sequence.append(stars[key]['pos'])
     except FileNotFoundError:
         print("nao encontrado")
 
-
 def DrawLine ():
     pygame.draw.lines(screen, (255,255,255), False, sequence, 2)
-
+    ultima = sequence[-1]
+    penultima = sequence[-2]
+    distancia = ((penultima[0] + ultima[0]) // 2, (penultima[1] + ultima[1]) // 2)
+    fontesys = pygame.font.SysFont("Arial", 20)
+    txt_distancia = fontesys.render("distacia em px: " + str(distancia[0] + distancia[1]), 1, (255, 255, 255))
+    screen.blit(txt_distancia, distancia)
+    
 running = True
 while running:
     for event in pygame.event.get():
@@ -85,8 +89,11 @@ while running:
                     txt_estrela = fontesys.render(
                         star["name"], 1, (255, 255, 255))
                     screen.blit(txt_estrela, position)
+                if len(sequence) > 1:
+                    DrawLine()
             elif event.key == pygame.K_F12:
                 stars = {}
+                sequence = []
                 open("bd.position", "w")
                 ResetScreen()
 
@@ -100,9 +107,10 @@ while running:
             key = str(pygame.time.get_ticks())
             stars[key] = {"pos": position, "name": item}
             function.DrawCircle(screen, position)
-            sequence = position
             screen.blit(txt_estrela, position)
-            print(sequence)
+            sequence.append(position)
+            if len(sequence) > 1:
+                DrawLine()
 
-    pygame.display.flip()
+    pygame.display.update()
 pygame.quit()
