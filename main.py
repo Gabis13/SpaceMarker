@@ -35,6 +35,8 @@ ResetScreen()
 pygame.mixer.init()
 pygame.mixer.music.load(os.path.join("Space_Machine_Power.mp3"))
 pygame.mixer.music.play(loops=-1)
+loading_sound = pygame.mixer.Sound("loading.mp3")
+click_sound = pygame.mixer.Sound('click.mp3')
 
 stars = {}
 sequence = []
@@ -91,6 +93,7 @@ while running:
                     screen.blit(txt_estrela, position)
                 if len(sequence) > 1:
                     DrawLine()
+                loading_sound.play()
             elif event.key == pygame.K_F12:
                 stars = {}
                 sequence = []
@@ -111,6 +114,6 @@ while running:
             sequence.append(position)
             if len(sequence) > 1:
                 DrawLine()
-
+            click_sound.play()
     pygame.display.update()
 pygame.quit()
