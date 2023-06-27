@@ -1,21 +1,21 @@
-import cx_Freeze
+from cx_Freeze import setup, Executable
 
 executables = [
-    cx_Freeze.Executable(script="main.py", icon="space.ico")
+    Executable(script="main.py", icon="space.ico")
 ]
 
-cx_Freeze.setup (
+setup (
     name = "SpaceMarker",
-    options = {
+    options = { 
         "build_exe": {
             "packages": ["pygame"],
             "include_files": [
-                "bg.jpg"
-                "click.mp3"
-                "loading.mp3"
-                "Space_Machine_Power.mp3"
-                "space.ico"
-                "space.png"
+                "bg.jpg",
+                "click.mp3",
+                "loading.mp3",
+                "Space_Machine_Power.mp3",
+                "space.ico",
+                "space.png",
                 "README.md"
             ]
         }
